@@ -1,0 +1,532 @@
+/* =============================================
+   VIZ FOR BIZ - Conto Economico Demo Styles
+   ============================================= */
+
+/* CSS Variables */
+:root {
+    --primary: #1a1a2e;
+    --accent: #e94560;
+    --light-gray: #f8f9fa;
+    --border-color: #dee2e6;
+    --success: #198754;
+    --danger: #dc3545;
+}
+
+/* Base */
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--light-gray);
+    color: var(--primary);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* =============================================
+   Navigation
+   ============================================= */
+.navbar-custom {
+    background: var(--primary);
+    padding: 0.5rem 0;
+}
+
+.navbar-custom .nav-link {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+}
+
+.navbar-custom .nav-link:hover {
+    color: var(--accent);
+}
+
+/* =============================================
+   Hero Section
+   ============================================= */
+.hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #16213e 100%);
+    color: white;
+    padding: 4rem 0;
+}
+
+.hero h1 {
+    font-weight: 700;
+    font-size: 2.5rem;
+}
+
+.hero .subtitle {
+    color: rgba(255,255,255,0.8);
+    font-size: 1.1rem;
+}
+
+/* =============================================
+   Section Title
+   ============================================= */
+.section-title {
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--accent);
+    display: inline-block;
+}
+
+/* =============================================
+   Cards
+   ============================================= */
+.card {
+    border: none;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border-radius: 12px;
+}
+
+.card-header {
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+}
+
+/* =============================================
+   Criterio Module
+   ============================================= */
+.criterio-module {
+    margin-bottom: 3rem;
+}
+
+.criterio-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.criterio-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.criterio-principle {
+    background: #f0f4f8;
+    border-left: 4px solid var(--primary);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.companies-affected {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.company-chip {
+    background: #ffeef0;
+    color: var(--danger);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* =============================================
+   Example Tables Container
+   ============================================= */
+.example-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 991px) {
+    .example-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.example-box {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.example-box.bad {
+    border: 2px solid var(--danger);
+}
+
+.example-box.good {
+    border: 2px solid var(--success);
+}
+
+.example-label {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.example-box.bad .example-label {
+    background: #ffeef0;
+    color: var(--danger);
+}
+
+.example-box.good .example-label {
+    background: #e6f4ea;
+    color: var(--success);
+}
+
+/* =============================================
+   Demo Tables - Base
+   ============================================= */
+.demo-table {
+    width: 100%;
+    font-size: 0.85rem;
+    border-collapse: collapse;
+}
+
+.demo-table th,
+.demo-table td {
+    padding: 0.5rem 0.75rem;
+}
+
+.demo-table .val {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+}
+
+.demo-table .voce {
+    text-align: left;
+}
+
+/* =============================================
+   Bad Table Specific Styles
+   ============================================= */
+.table-style-no-grid td,
+.table-style-no-grid th {
+    border: none !important;
+}
+
+.table-style-proportional .val {
+    font-family: Arial, sans-serif !important;
+}
+
+.table-style-single-euro .val {
+    font-size: 0.7rem;
+}
+
+.table-style-parentheses .negative {
+    color: inherit;
+}
+
+.table-style-inverted th.current {
+    background: #ff6600;
+    color: white;
+}
+
+.table-style-inverted th.previous {
+    background: white;
+    color: #333;
+}
+
+.table-style-wide-col .voce {
+    width: 70%;
+}
+
+.table-style-all-bold td {
+    font-weight: 700;
+}
+
+/* =============================================
+   Good Table Styles (table-ce)
+   ============================================= */
+.table-ce {
+    font-size: 0.85rem;
+}
+
+.table-ce th {
+    background: var(--primary);
+    color: white;
+    font-weight: 500;
+    text-align: right;
+    padding: 0.6rem 0.75rem;
+}
+
+.table-ce th:first-child {
+    text-align: left;
+}
+
+.table-ce td {
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.table-ce .voce {
+    text-align: left;
+}
+
+.table-ce .val {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+}
+
+.table-ce .subtotale {
+    font-weight: 600;
+    background: rgba(26, 26, 46, 0.05);
+    border-top: 2px solid var(--primary);
+}
+
+.table-ce .dettaglio {
+    font-style: italic;
+    color: #666;
+    padding-left: 1.5rem !important;
+}
+
+.table-ce .totale {
+    font-weight: 700;
+    background: rgba(233, 69, 96, 0.1);
+    border-top: 3px solid var(--accent);
+}
+
+/* Delta Colors */
+.delta-pos { color: var(--success); }
+.delta-neg { color: var(--danger); }
+
+/* =============================================
+   Error Gallery
+   ============================================= */
+.error-card {
+    transition: transform 0.2s;
+}
+
+.error-card:hover {
+    transform: translateY(-4px);
+}
+
+.error-source {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+/* =============================================
+   Comparison Tabs
+   ============================================= */
+.comparison-tabs .nav-link {
+    color: var(--primary);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+}
+
+.comparison-tabs .nav-link.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* =============================================
+   Quiz Section
+   ============================================= */
+.quiz-option {
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.quiz-option:hover {
+    border-color: var(--primary);
+    background: #f8f9fa;
+}
+
+.quiz-option.selected {
+    border-color: var(--primary);
+    background: rgba(26, 26, 46, 0.05);
+}
+
+.quiz-option.correct {
+    border-color: var(--success);
+    background: #e6f4ea;
+}
+
+.quiz-option.incorrect {
+    border-color: var(--danger);
+    background: #ffeef0;
+}
+
+.quiz-feedback {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    display: none;
+}
+
+.quiz-feedback.show {
+    display: block;
+}
+
+.quiz-feedback.correct {
+    background: #e6f4ea;
+    border: 1px solid var(--success);
+}
+
+.quiz-feedback.incorrect {
+    background: #ffeef0;
+    border: 1px solid var(--danger);
+}
+
+/* =============================================
+   Checklist
+   ============================================= */
+.checklist-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.checklist-section h5 {
+    color: var(--primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent);
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+}
+
+.checklist-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--success);
+}
+
+/* =============================================
+   Company Cards
+   ============================================= */
+.company-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    margin: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.company-badge:hover {
+    transform: scale(1.05);
+}
+
+.company-badge.active {
+    box-shadow: 0 0 0 3px var(--accent);
+}
+
+.criteria-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.criteria-indicator.pass {
+    background: #e6f4ea;
+    color: var(--success);
+}
+
+.criteria-indicator.fail {
+    background: #ffeef0;
+    color: var(--danger);
+}
+
+/* =============================================
+   Toggle Buttons
+   ============================================= */
+.toggle-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.toggle-btn {
+    padding: 0.75rem 2rem;
+    border: 2px solid var(--primary);
+    background: white;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggle-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* =============================================
+   Issue Tags
+   ============================================= */
+.issue-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin: 0.2rem;
+}
+
+.issue-tag.negative {
+    background: #ffeef0;
+    color: var(--danger);
+}
+
+.issue-tag.positive {
+    background: #e6f4ea;
+    color: var(--success);
+}
+
+/* =============================================
+   Charts
+   ============================================= */
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+/* =============================================
+   Footer
+   ============================================= */
+footer {
+    background: var(--primary);
+    color: rgba(255,255,255,0.7);
+    padding: 2rem 0;
+    margin-top: 4rem;
+}
+
+footer a {
+    color: var(--accent);
+}
+
+/* =============================================
+   Print Styles
+   ============================================= */
+@media print {
+    .no-print { display: none !important; }
+    .checklist-section { break-inside: avoid; }
+}

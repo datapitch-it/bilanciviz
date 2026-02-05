@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facciamolo Meglio - Conto Economico | VIZ FOR BIZ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --accent: #e94560;
+            --light-gray: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-gray);
+            color: var(--primary);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #16213e 100%);
+            color: white;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+        }
+
+        .hero .subtitle {
+            color: rgba(255,255,255,0.8);
+            font-size: 1.1rem;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent);
+            display: inline-block;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-radius: 12px;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            padding: 1rem 1.25rem;
+        }
+
+        /* Criteri Cards */
+        .criterio-card {
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .criterio-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .criterio-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Tabelle Conto Economico */
+        .table-ce {
+            font-size: 0.9rem;
+        }
+
+        .table-ce th {
+            background: var(--primary);
+            color: white;
+            font-weight: 500;
+            text-align: right;
+            padding: 0.75rem;
+        }
+
+        .table-ce th:first-child,
+        .table-ce th:nth-child(2) {
+            text-align: left;
+        }
+
+        .table-ce td {
+            padding: 0.5rem 0.75rem;
+            vertical-align: middle;
+        }
+
+        .table-ce .voce {
+            text-align: left;
+        }
+
+        .table-ce .valore {
+            text-align: right;
+            font-family: 'Roboto Mono', monospace;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .table-ce .subtotale {
+            font-weight: 600;
+            background: rgba(26, 26, 46, 0.05);
+            border-top: 2px solid var(--primary);
+        }
+
+        .table-ce .dettaglio {
+            font-style: italic;
+            color: #666;
+            font-size: 0.85rem;
+            padding-left: 2rem !important;
+        }
+
+        .table-ce .totale-finale {
+            font-weight: 700;
+            background: rgba(233, 69, 96, 0.1);
+            border-top: 3px solid var(--accent);
+        }
+
+        .table-ce .delta-positivo {
+            color: #198754;
+        }
+
+        .table-ce .delta-negativo {
+            color: #dc3545;
+        }
+
+        /* Bad Table Styling */
+        .table-bad {
+            font-family: Arial, sans-serif;
+        }
+
+        .table-bad th {
+            background: #ccc;
+            color: #333;
+        }
+
+        .table-bad td {
+            border: none;
+            padding: 0.3rem;
+        }
+
+        .table-bad .valore {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Company Analysis */
+        .company-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .company-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .company-badge.active {
+            box-shadow: 0 0 0 3px var(--accent);
+        }
+
+        .issue-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.2rem;
+        }
+
+        .issue-tag.negative {
+            background: #ffeef0;
+            color: #dc3545;
+        }
+
+        .issue-tag.positive {
+            background: #e6f4ea;
+            color: #198754;
+        }
+
+        /* Toggle */
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .toggle-btn {
+            padding: 0.75rem 2rem;
+            border: 2px solid var(--primary);
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .toggle-btn:hover:not(.active) {
+            background: var(--light-gray);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: rgba(255,255,255,0.7);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        footer a {
+            color: var(--accent);
+        }
+
+        /* Chart containers */
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        /* Responsive table wrapper */
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Note column */
+        .note-col {
+            width: 40px;
+            text-align: center;
+            color: #999;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1>Facciamolo Meglio, Questo Conto Economico</h1>
+                <p class="subtitle mb-4">Analisi della visualizzazione dei dati nelle tabelle del Conto Economico di 10 grandi aziende italiane</p>
+                <p class="mb-0"><strong>Una ricerca di VIZ FOR BIZ</strong> &bull; Gennaio 2026</p>
+            </div>
+            <div class="col-lg-4 text-end d-none d-lg-block">
+                <div style="font-size: 4rem; opacity: 0.3;">&#128202;</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Intro Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <p class="lead">Il Conto Economico è una tabella obbligatoria presente in tutti i bilanci delle società di capitali. Insieme allo Stato Patrimoniale è lo strumento fondamentale per comprendere l'andamento dell'azienda nell'ultimo anno.</p>
+                <p><strong>Errori di formattazione, infelici scelte di design, strane scelte cromatiche rendono più difficile la lettura.</strong></p>
+                <p>L'analisi non si sofferma sulla validità e correttezza dei dati numerici, bensì sulla <strong>forma con la quale vengono presentati</strong>.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- I 5 Criteri -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="section-title">I 5 Criteri di Valutazione</h2>
+        <div class="row g-4 mt-2">
+            <div class="col-md-6 col-lg-4">
+                <div class="card criterio-card h-100 p-4">
+                    <div class="criterio-icon" style="background: #e3f2fd; color: #1976d2;">A</div>
+                    <h5>Completezza</h5>
+                    <p class="text-muted mb-0">Presenza di dati dell'anno precedente, variazioni in valore assoluto e percentuale, colonna note.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card criterio-card h-100 p-4">
+                    <div class="criterio-icon" style="background: #f3e5f5; color: #7b1fa2;">B</div>
+                    <h5>Griglia</h5>
+                    <p class="text-muted mb-0">Presenza di linee orizzontali che aiutino il lettore a non perdersi fra le righe, evidenziando subtotali e totali.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card criterio-card h-100 p-4">
+                    <div class="criterio-icon" style="background: #e8f5e9; color: #388e3c;">C</div>
+                    <h5>Gerarchia Visiva</h5>
+                    <p class="text-muted mb-0">Chiara distinzione tra voci di dettaglio, voci principali e subtotali attraverso indentazione, grassetto e dimensioni.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card criterio-card h-100 p-4">
+                    <div class="criterio-icon" style="background: #fff3e0; color: #f57c00;">D</div>
+                    <h5>Valori Numerici</h5>
+                    <p class="text-muted mb-0">Font mono-spaced per allineamento verticale, valori in migliaia/milioni, negativi con segno "–" non parentesi.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="card criterio-card h-100 p-4">
+                    <div class="criterio-icon" style="background: #fce4ec; color: #c2185b;">E</div>
+                    <h5>Caratteri/Testi</h5>
+                    <p class="text-muted mb-0">Font leggibile (no monospaced per testi), colonna voci non troppo larga, testi vicini ai valori.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Confronto Prima/Dopo -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Confronto: Prima vs Dopo</h2>
+        <p class="text-muted mb-4">Clicca per vedere la differenza tra una tabella con problemi comuni e una ben progettata.</p>
+
+        <div class="toggle-container">
+            <button class="toggle-btn active" onclick="showTable('bad')">&#10060; Con Problemi</button>
+            <button class="toggle-btn" onclick="showTable('good')">&#9989; Ben Progettata</button>
+        </div>
+
+        <!-- Bad Table -->
+        <div id="table-bad" class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Conto Economico - Esempio con problemi comuni</span>
+                <span class="badge bg-danger">Da migliorare</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bad mb-0">
+                        <thead>
+                            <tr style="background: #e0e0e0;">
+                                <th style="text-align:left; width:50%;">Voce</th>
+                                <th style="text-align:right;">2024</th>
+                                <th style="text-align:right;">2023</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Ricavi da vendite prodotti</td><td style="text-align:right; font-family: Arial;">20000</td><td style="text-align:right;">17400</td></tr>
+                            <tr><td>Ricavi da lavorazioni conto terzi</td><td style="text-align:right;">750</td><td style="text-align:right;">700</td></tr>
+                            <tr><td>Altri ricavi operativi</td><td style="text-align:right;">250</td><td style="text-align:right;">200</td></tr>
+                            <tr style="font-weight:bold;"><td>TOTALE RICAVI</td><td style="text-align:right;">21000</td><td style="text-align:right;">18300</td></tr>
+                            <tr><td style="padding-left:20px; font-style:italic;">Acquisto materie prime</td><td style="text-align:right;">(4200)</td><td style="text-align:right;">(4100)</td></tr>
+                            <tr><td style="padding-left:20px; font-style:italic;">Acquisto semilavorati</td><td style="text-align:right;">(950)</td><td style="text-align:right;">(900)</td></tr>
+                            <tr><td style="padding-left:20px; font-style:italic;">Acquisto componenti</td><td style="text-align:right;">(800)</td><td style="text-align:right;">(750)</td></tr>
+                            <tr><td>Acquisti</td><td style="text-align:right;">(5950)</td><td style="text-align:right;">(5750)</td></tr>
+                            <tr><td>Variazione rimanenze</td><td style="text-align:right;">(150)</td><td style="text-align:right;">(120)</td></tr>
+                            <tr><td>Manodopera diretta</td><td style="text-align:right;">(2100)</td><td style="text-align:right;">(2000)</td></tr>
+                            <tr><td>Energia e utilities</td><td style="text-align:right;">(540)</td><td style="text-align:right;">(500)</td></tr>
+                            <tr style="font-weight:bold;"><td>TOTALE COSTI PRODUZIONE</td><td style="text-align:right;">(8440)</td><td style="text-align:right;">(8130)</td></tr>
+                            <tr style="font-weight:bold; background:#f0f0f0;"><td>MARGINE INDUSTRIALE LORDO</td><td style="text-align:right;">12560</td><td style="text-align:right;">10170</td></tr>
+                            <tr><td>Costi commerciali</td><td style="text-align:right;">(620)</td><td style="text-align:right;">(610)</td></tr>
+                            <tr><td>Costi amministrativi</td><td style="text-align:right;">(480)</td><td style="text-align:right;">(450)</td></tr>
+                            <tr><td>Personale indiretto</td><td style="text-align:right;">(1150)</td><td style="text-align:right;">(1000)</td></tr>
+                            <tr style="font-weight:bold;"><td>TOTALE COSTI GENERALI</td><td style="text-align:right;">(2250)</td><td style="text-align:right;">(2060)</td></tr>
+                            <tr style="font-weight:bold; background:#f0f0f0;"><td>EBITDA</td><td style="text-align:right;">10310</td><td style="text-align:right;">8110</td></tr>
+                            <tr><td>Ammortamento impianti</td><td style="text-align:right;">(750)</td><td style="text-align:right;">(600)</td></tr>
+                            <tr><td>Ammortamento attrezzature</td><td style="text-align:right;">(150)</td><td style="text-align:right;">(100)</td></tr>
+                            <tr><td>Accantonamenti</td><td style="text-align:right;">(90)</td><td style="text-align:right;">(50)</td></tr>
+                            <tr style="font-weight:bold;"><td>TOTALE AMMORTAMENTI</td><td style="text-align:right;">(810)</td><td style="text-align:right;">(650)</td></tr>
+                            <tr style="font-weight:bold; background:#f0f0f0;"><td>EBIT</td><td style="text-align:right;">9500</td><td style="text-align:right;">7460</td></tr>
+                            <tr><td>Proventi finanziari</td><td style="text-align:right;">40</td><td style="text-align:right;">30</td></tr>
+                            <tr><td>Oneri finanziari</td><td style="text-align:right;">(210)</td><td style="text-align:right;">(150)</td></tr>
+                            <tr style="font-weight:bold;"><td>TOTALE POSTE FINANZIARIE</td><td style="text-align:right;">(170)</td><td style="text-align:right;">(120)</td></tr>
+                            <tr style="font-weight:bold; background:#f0f0f0;"><td>EBT</td><td style="text-align:right;">9670</td><td style="text-align:right;">7580</td></tr>
+                            <tr><td>Imposte sul reddito</td><td style="text-align:right;">(2000)</td><td style="text-align:right;">(1500)</td></tr>
+                            <tr style="font-weight:bold; background:#ffe0e0;"><td>UTILE NETTO</td><td style="text-align:right;">7670</td><td style="text-align:right;">1200</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-white">
+                <h6 class="text-danger mb-2">Problemi identificati:</h6>
+                <span class="issue-tag negative">Mancano variazioni anno su anno</span>
+                <span class="issue-tag negative">Nessuna colonna note</span>
+                <span class="issue-tag negative">Font non mono-spaced</span>
+                <span class="issue-tag negative">Negativi tra parentesi disallineano</span>
+                <span class="issue-tag negative">Griglia assente</span>
+                <span class="issue-tag negative">Gerarchia poco chiara</span>
+            </div>
+        </div>
+
+        <!-- Good Table -->
+        <div id="table-good" class="card" style="display:none;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Conto Economico - Esempio ben progettato</span>
+                <span class="badge bg-success">Best Practice</span>
+            </div>
+            <div class="card-body p-0">
+                <p class="px-3 pt-3 text-muted mb-2" style="font-size: 0.85rem;">Tutti i dati sono espressi in migliaia di Euro</p>
+                <div class="table-responsive">
+                    <table class="table table-ce mb-0">
+                        <thead>
+                            <tr>
+                                <th class="note-col">Note</th>
+                                <th>Voce</th>
+                                <th style="text-align:right;">2024</th>
+                                <th style="text-align:right;">2023</th>
+                                <th style="text-align:right;">Delta</th>
+                                <th style="text-align:right;">Delta %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="note-col">1</td>
+                                <td class="voce">Ricavi da vendite prodotti</td>
+                                <td class="valore">20 000</td>
+                                <td class="valore">17 400</td>
+                                <td class="valore delta-positivo">2 600</td>
+                                <td class="valore delta-positivo">13%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce">Ricavi da lavorazioni conto terzi</td>
+                                <td class="valore">750</td>
+                                <td class="valore">700</td>
+                                <td class="valore delta-positivo">50</td>
+                                <td class="valore delta-positivo">7%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col">2</td>
+                                <td class="voce">Altri ricavi operativi</td>
+                                <td class="valore">250</td>
+                                <td class="valore">200</td>
+                                <td class="valore delta-positivo">50</td>
+                                <td class="valore delta-positivo">20%</td>
+                            </tr>
+                            <tr class="subtotale">
+                                <td class="note-col"><strong>A</strong></td>
+                                <td class="voce"><strong>Totale ricavi</strong></td>
+                                <td class="valore"><strong>21 000</strong></td>
+                                <td class="valore"><strong>18 300</strong></td>
+                                <td class="valore delta-positivo"><strong>2 700</strong></td>
+                                <td class="valore delta-positivo"><strong>13%</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce dettaglio">Acquisto materie prime</td>
+                                <td class="valore" style="font-style:italic; color:#666;">4 200</td>
+                                <td class="valore" style="font-style:italic; color:#666;">4 100</td>
+                                <td class="valore" style="font-style:italic; color:#666;">100</td>
+                                <td class="valore" style="font-style:italic; color:#666;">2%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce dettaglio">Acquisto semilavorati</td>
+                                <td class="valore" style="font-style:italic; color:#666;">950</td>
+                                <td class="valore" style="font-style:italic; color:#666;">900</td>
+                                <td class="valore" style="font-style:italic; color:#666;">50</td>
+                                <td class="valore" style="font-style:italic; color:#666;">5%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce dettaglio">Acquisto componenti</td>
+                                <td class="valore" style="font-style:italic; color:#666;">800</td>
+                                <td class="valore" style="font-style:italic; color:#666;">750</td>
+                                <td class="valore" style="font-style:italic; color:#666;">50</td>
+                                <td class="valore" style="font-style:italic; color:#666;">6%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce">Acquisti</td>
+                                <td class="valore">5 950</td>
+                                <td class="valore">5 750</td>
+                                <td class="valore">200</td>
+                                <td class="valore">3%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce">Variazione rimanenze</td>
+                                <td class="valore">– 150</td>
+                                <td class="valore">– 120</td>
+                                <td class="valore delta-negativo">– 30</td>
+                                <td class="valore delta-negativo">20%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce">Manodopera diretta</td>
+                                <td class="valore">2 100</td>
+                                <td class="valore">2 000</td>
+                                <td class="valore">100</td>
+                                <td class="valore">5%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col">3</td>
+                                <td class="voce">Energia e utilities</td>
+                                <td class="valore">540</td>
+                                <td class="valore">500</td>
+                                <td class="valore">40</td>
+                                <td class="valore">7%</td>
+                            </tr>
+                            <tr class="subtotale">
+                                <td class="note-col"><strong>B</strong></td>
+                                <td class="voce"><strong>Totale costi produzione</strong></td>
+                                <td class="valore"><strong>8 440</strong></td>
+                                <td class="valore"><strong>8 130</strong></td>
+                                <td class="valore"><strong>310</strong></td>
+                                <td class="valore"><strong>4%</strong></td>
+                            </tr>
+                            <tr class="subtotale" style="background: rgba(25, 135, 84, 0.08);">
+                                <td class="note-col"><strong>C</strong></td>
+                                <td class="voce"><strong>Margine industriale lordo (A-B)</strong></td>
+                                <td class="valore"><strong>12 560</strong></td>
+                                <td class="valore"><strong>10 170</strong></td>
+                                <td class="valore delta-positivo"><strong>2 390</strong></td>
+                                <td class="valore delta-positivo"><strong>19%</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce">Costi commerciali</td>
+                                <td class="valore">620</td>
+                                <td class="valore">610</td>
+                                <td class="valore">10</td>
+                                <td class="valore">2%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce">Costi amministrativi</td>
+                                <td class="valore">480</td>
+                                <td class="valore">450</td>
+                                <td class="valore">30</td>
+                                <td class="valore">6%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col">4</td>
+                                <td class="voce">Personale indiretto</td>
+                                <td class="valore">1 150</td>
+                                <td class="valore">1 000</td>
+                                <td class="valore">150</td>
+                                <td class="valore">13%</td>
+                            </tr>
+                            <tr class="subtotale">
+                                <td class="note-col"><strong>D</strong></td>
+                                <td class="voce"><strong>Totale costi generali</strong></td>
+                                <td class="valore"><strong>2 250</strong></td>
+                                <td class="valore"><strong>2 060</strong></td>
+                                <td class="valore"><strong>190</strong></td>
+                                <td class="valore"><strong>8%</strong></td>
+                            </tr>
+                            <tr class="subtotale" style="background: rgba(25, 135, 84, 0.08);">
+                                <td class="note-col"><strong>E</strong></td>
+                                <td class="voce"><strong>EBITDA (C-D)</strong></td>
+                                <td class="valore"><strong>10 310</strong></td>
+                                <td class="valore"><strong>8 110</strong></td>
+                                <td class="valore delta-positivo"><strong>2 200</strong></td>
+                                <td class="valore delta-positivo"><strong>21%</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="note-col">5</td>
+                                <td class="voce">Ammortamento impianti</td>
+                                <td class="valore">750</td>
+                                <td class="valore">600</td>
+                                <td class="valore">150</td>
+                                <td class="valore">20%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce">Ammortamento attrezzature</td>
+                                <td class="valore">150</td>
+                                <td class="valore">100</td>
+                                <td class="valore">50</td>
+                                <td class="valore">33%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col">6</td>
+                                <td class="voce">Accantonamenti</td>
+                                <td class="valore">– 90</td>
+                                <td class="valore">– 50</td>
+                                <td class="valore delta-negativo">– 40</td>
+                                <td class="valore delta-negativo">44%</td>
+                            </tr>
+                            <tr class="subtotale">
+                                <td class="note-col"><strong>F</strong></td>
+                                <td class="voce"><strong>Totale ammortamenti</strong></td>
+                                <td class="valore"><strong>810</strong></td>
+                                <td class="valore"><strong>650</strong></td>
+                                <td class="valore"><strong>160</strong></td>
+                                <td class="valore"><strong>20%</strong></td>
+                            </tr>
+                            <tr class="subtotale" style="background: rgba(25, 135, 84, 0.08);">
+                                <td class="note-col"><strong>G</strong></td>
+                                <td class="voce"><strong>EBIT (E-F)</strong></td>
+                                <td class="valore"><strong>9 500</strong></td>
+                                <td class="valore"><strong>7 460</strong></td>
+                                <td class="valore delta-positivo"><strong>2 040</strong></td>
+                                <td class="valore delta-positivo"><strong>21%</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce">Proventi finanziari</td>
+                                <td class="valore">40</td>
+                                <td class="valore">30</td>
+                                <td class="valore delta-positivo">10</td>
+                                <td class="valore delta-positivo">25%</td>
+                            </tr>
+                            <tr>
+                                <td class="note-col">7</td>
+                                <td class="voce">Oneri finanziari</td>
+                                <td class="valore">– 210</td>
+                                <td class="valore">– 150</td>
+                                <td class="valore delta-negativo">– 60</td>
+                                <td class="valore delta-negativo">29%</td>
+                            </tr>
+                            <tr class="subtotale">
+                                <td class="note-col"><strong>H</strong></td>
+                                <td class="voce"><strong>Totale poste finanziarie</strong></td>
+                                <td class="valore"><strong>– 170</strong></td>
+                                <td class="valore"><strong>– 120</strong></td>
+                                <td class="valore delta-negativo"><strong>– 50</strong></td>
+                                <td class="valore delta-negativo"><strong>29%</strong></td>
+                            </tr>
+                            <tr class="subtotale" style="background: rgba(25, 135, 84, 0.08);">
+                                <td class="note-col"><strong>I</strong></td>
+                                <td class="voce"><strong>EBT (G-H)</strong></td>
+                                <td class="valore"><strong>9 670</strong></td>
+                                <td class="valore"><strong>7 580</strong></td>
+                                <td class="valore delta-positivo"><strong>2 090</strong></td>
+                                <td class="valore delta-positivo"><strong>22%</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="note-col"></td>
+                                <td class="voce">Imposte sul reddito</td>
+                                <td class="valore">2 000</td>
+                                <td class="valore">1 500</td>
+                                <td class="valore">500</td>
+                                <td class="valore">25%</td>
+                            </tr>
+                            <tr class="totale-finale">
+                                <td class="note-col"><strong>8</strong></td>
+                                <td class="voce"><strong>Utile netto (I-J)</strong></td>
+                                <td class="valore"><strong>7 670</strong></td>
+                                <td class="valore"><strong>6 080</strong></td>
+                                <td class="valore delta-positivo"><strong>1 590</strong></td>
+                                <td class="valore delta-positivo"><strong>21%</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer bg-white">
+                <h6 class="text-success mb-2">Elementi positivi:</h6>
+                <span class="issue-tag positive">Variazioni anno su anno</span>
+                <span class="issue-tag positive">Colonna note presente</span>
+                <span class="issue-tag positive">Valori con spazi ISO 80000-1</span>
+                <span class="issue-tag positive">Negativi con segno "–"</span>
+                <span class="issue-tag positive">Griglia coerente</span>
+                <span class="issue-tag positive">3 livelli gerarchici chiari</span>
+                <span class="issue-tag positive">Subtotali evidenziati</span>
+                <span class="issue-tag positive">Operazioni esplicitate (A-B)</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Analisi Aziende -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="section-title">Le 10 Aziende Analizzate</h2>
+        <p class="text-muted mb-4">Bilanci 2024 delle società a maggior capitalizzazione su Borsa Milano</p>
+
+        <div class="mb-4">
+            <span class="company-badge active" onclick="showCompany('enel')" style="background:#e8f5e9;">ENEL</span>
+            <span class="company-badge" onclick="showCompany('eni')" style="background:#fff3e0;">ENI</span>
+            <span class="company-badge" onclick="showCompany('ferrari')" style="background:#ffebee;">FERRARI</span>
+            <span class="company-badge" onclick="showCompany('generali')" style="background:#e3f2fd;">GENERALI</span>
+            <span class="company-badge" onclick="showCompany('intesa')" style="background:#fce4ec;">INTESA</span>
+            <span class="company-badge" onclick="showCompany('snam')" style="background:#e0f7fa;">SNAM</span>
+            <span class="company-badge" onclick="showCompany('stellantis')" style="background:#f3e5f5;">STELLANTIS</span>
+            <span class="company-badge" onclick="showCompany('stm')" style="background:#e8eaf6;">STM</span>
+            <span class="company-badge" onclick="showCompany('terna')" style="background:#fff8e1;">TERNA</span>
+            <span class="company-badge" onclick="showCompany('unicredit')" style="background:#efebe9;">UNICREDIT</span>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <!-- ENEL -->
+                <div id="company-enel" class="company-detail">
+                    <h4>ENEL</h4>
+                    <p class="text-muted">Tabella a pag. 159 del bilancio</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Punti di forza</h6>
+                            <ul class="text-success">
+                                <li>Presenti variazioni in valore assoluto e percentuale</li>
+                                <li>Buona indicazione delle cifre in milioni di €</li>
+                                <li>Testi su più righe per non distanziare dai valori</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Criticità</h6>
+                            <ul class="text-danger">
+                                <li>Struttura molto ridotta (metà voci sono subtotali)</li>
+                                <li>Dati ultimo anno su sfondo colorato = minor contrasto</li>
+                                <li>Costi non indicati come negativi</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ENI -->
+                <div id="company-eni" class="company-detail" style="display:none;">
+                    <h4>ENI</h4>
+                    <p class="text-muted">Tabella a pag. 429 del bilancio</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Punti di forza</h6>
+                            <ul class="text-success">
+                                <li>Buona indicazione delle note a destra</li>
+                                <li>Subtotali in maiuscolo con colore diverso</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Criticità</h6>
+                            <ul class="text-danger">
+                                <li>Manca variazione anno su anno</li>
+                                <li>Valori fino al singolo euro (difficili da leggere)</li>
+                                <li>Font proprietario molto sottile</li>
+                                <li>Parentesi disallineano i numeri</li>
+                                <li>Descrizioni troppo distanti dai valori</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FERRARI -->
+                <div id="company-ferrari" class="company-detail" style="display:none;">
+                    <h4>FERRARI</h4>
+                    <p class="text-muted">Tabella a pag. 94 del bilancio</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Punti di forza</h6>
+                            <ul class="text-success">
+                                <li>3 esercizi confrontati (prassi USA)</li>
+                                <li>Percentuali riferite a Net Revenue</li>
+                                <li>Sfondo nero per colonna 2024 = massimo contrasto</li>
+                                <li>Font mono-spaced per i valori</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Criticità</h6>
+                            <ul class="text-danger">
+                                <li>Manca variazione anno su anno</li>
+                                <li>Griglia troppo leggera (solo 2 linee)</li>
+                                <li>Font molto particolare, non ottimale per leggibilità</li>
+                                <li>Grande distanza tra testi e numeri</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GENERALI -->
+                <div id="company-generali" class="company-detail" style="display:none;">
+                    <h4>GENERALI</h4>
+                    <p class="text-muted">Tabella a pag. 222 del bilancio</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Punti di forza</h6>
+                            <ul class="text-success">
+                                <li>Note ben disposte a sinistra</li>
+                                <li>3 livelli gerarchici con elenchi puntati</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Criticità</h6>
+                            <ul class="text-danger">
+                                <li>Mancano colonne di confronto fra esercizi</li>
+                                <li>Griglia estremamente sottile</li>
+                                <li>Esercizio più recente ha contrasto minore (sfondo grigio)</li>
+                                <li>Testi poco leggibili per scarso contrasto</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INTESA -->
+                <div id="company-intesa" class="company-detail" style="display:none;">
+                    <h4>INTESA SAN PAOLO</h4>
+                    <p class="text-muted">Tabella a pag. 424 del bilancio</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Punti di forza</h6>
+                            <ul class="text-success">
+                                <li>Variazione in termini assoluti e percentuali</li>
+                                <li>Gerarchia con voci minori in corsivo</li>
+                                <li>Negativi con segno meno</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Criticità</h6>
+                            <ul class="text-danger">
+                                <li><strong>Unico caso senza griglia!</strong></li>
+                                <li>Grassetto insufficiente per subtotali</li>
+                                <li>Carattere non mono-spaced</li>
+                                <li>Colonna voci troppo larga</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SNAM -->
+                <div id="company-snam" class="company-detail" style="display:none;">
+                    <h4>SNAM</h4>
+                    <p class="text-muted">Tabella a pag. 53 del bilancio</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Punti di forza</h6>
+                            <ul class="text-success">
+                                <li>Variazioni in valori assoluti e percentuali</li>
+                                <li>Griglia consistente colore azzurro</li>
+                                <li>Font mono-spaced</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Criticità</h6>
+                            <ul class="text-danger">
+                                <li>Nessuna nota apparente</li>
+                                <li>Griglia con righe stesso spessore (non evidenzia gerarchia)</li>
+                                <li>Colonna 2024 lontana dalle voci</li>
+                                <li>3 livelli non chiari (normale, grassetto, maiuscolo)</li>
+                                <li>Parentesi vanificano allineamento</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STELLANTIS -->
+                <div id="company-stellantis" class="company-detail" style="display:none;">
+                    <h4>STELLANTIS</h4>
+                    <p class="text-muted">Tabella a pag. 282 del bilancio</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Punti di forza</h6>
+                            <ul class="text-success">
+                                <li>3 anni confrontati</li>
+                                <li>Righe con sfondo alternato</li>
+                                <li>Righe per i totali</li>
+                                <li>Parentesi mantengono allineamento</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Criticità</h6>
+                            <ul class="text-danger">
+                                <li>Manca variazione anno su anno</li>
+                                <li>Note occupano troppo spazio</li>
+                                <li>Simbolo € inconsistente</li>
+                                <li>Caratteri graziati non adatti a tabelle economiche</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STM -->
+                <div id="company-stm" class="company-detail" style="display:none;">
+                    <h4>STMicroelectronics</h4>
+                    <p class="text-muted">Tabella a pag. 267 del bilancio</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Punti di forza</h6>
+                            <ul class="text-success">
+                                <li>Sfondo a righe alternate</li>
+                                <li>Righe orizzontali sopra i totali</li>
+                                <li>Font mono-spaced, allineamento corretto</li>
+                                <li>Subtotali evidenziati con grassetto</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Criticità</h6>
+                            <ul class="text-danger">
+                                <li>Manca variazione anno su anno</li>
+                                <li>Note un po' pesanti</li>
+                                <li>Solo 2 livelli gerarchici</li>
+                                <li>Colonna voci troppo larga</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TERNA -->
+                <div id="company-terna" class="company-detail" style="display:none;">
+                    <h4>TERNA</h4>
+                    <p class="text-muted">Tabella a pag. 404 del bilancio</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Punti di forza</h6>
+                            <ul class="text-success">
+                                <li>Buona disposizione note</li>
+                                <li>Ultimo anno evidenziato con riquadro</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Criticità</h6>
+                            <ul class="text-danger">
+                                <li>Manca confronto anno su anno</li>
+                                <li>Griglia solo per righe "Utile"</li>
+                                <li>Troppi livelli gerarchici (confusione)</li>
+                                <li>Colore grigio a basso contrasto</li>
+                                <li>Colonna voci troppo larga</li>
+                                <li>Parentesi disallineano</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UNICREDIT -->
+                <div id="company-unicredit" class="company-detail" style="display:none;">
+                    <h4>UNICREDIT</h4>
+                    <p class="text-muted">Tabella a pag. 357 del bilancio</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Punti di forza</h6>
+                            <ul class="text-success">
+                                <li>Identificativo numerico per le note</li>
+                                <li>Griglia uniforme e ben visibile</li>
+                                <li>Box rosso per evidenziare dati recenti</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Criticità</h6>
+                            <ul class="text-danger">
+                                <li>Manca variazione anno su anno</li>
+                                <li>Griglia uguale spessore (non aiuta gerarchia)</li>
+                                <li>Parentesi non allineate</li>
+                                <li>Colonna descrizioni molto larga</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Grafici Problemi -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Problemi Più Comuni</h2>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">Problemi per Criterio</div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="chartProblemi"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">Aziende: Punti di Forza vs Criticità</div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="chartAziende"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Best Practices Summary -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="section-title">Riepilogo Best Practices</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 border-success">
+                    <div class="card-header bg-success text-white">Da Fare</div>
+                    <div class="card-body">
+                        <ul class="mb-0">
+                            <li>Includere <strong>variazioni anno su anno</strong> (valore assoluto e %)</li>
+                            <li>Usare <strong>font mono-spaced</strong> per i valori numerici</li>
+                            <li>Esprimere valori in <strong>migliaia o milioni</strong>, non unità</li>
+                            <li>Usare <strong>segno "–"</strong> per i negativi, non parentesi</li>
+                            <li>Creare <strong>griglia coerente</strong> con subtotali evidenziati</li>
+                            <li>Definire <strong>2-3 livelli gerarchici</strong> chiari</li>
+                            <li>Mantenere <strong>colonna voci stretta</strong>, vicina ai valori</li>
+                            <li>Posizionare l'<strong>anno più recente vicino alle voci</strong></li>
+                            <li>Esplicitare le <strong>operazioni tra subtotali</strong> (A-B, C-D)</li>
+                            <li>Usare lo <strong>spazio come separatore</strong> delle migliaia (ISO 80000-1)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 border-danger">
+                    <div class="card-header bg-danger text-white">Da Evitare</div>
+                    <div class="card-body">
+                        <ul class="mb-0">
+                            <li>Omettere il <strong>confronto con l'anno precedente</strong></li>
+                            <li>Usare <strong>font proporzionali</strong> per i numeri</li>
+                            <li>Mostrare valori al <strong>singolo euro</strong> (difficili da leggere)</li>
+                            <li>Usare <strong>parentesi per i negativi</strong> (disallineano)</li>
+                            <li>Eliminare la <strong>griglia</strong> o usarla in modo inconsistente</li>
+                            <li>Creare <strong>troppi livelli gerarchici</strong> (confondono)</li>
+                            <li>Usare <strong>colonne voci troppo larghe</strong></li>
+                            <li>Mettere l'<strong>anno recente su sfondo scuro</strong> con testo chiaro</li>
+                            <li>Usare <strong>font graziati o molto sottili</strong></li>
+                            <li>Usare <strong>grassetto eccessivo</strong> o inconsistente</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container text-center">
+        <p class="mb-1"><strong>VIZ FOR BIZ</strong> &bull; Gennaio 2026</p>
+        <p class="mb-0">Una ricerca di <a href="https://vizforbiz.substack.com" target="_blank">Paolo Guadagni</a></p>
+        <p class="mt-3" style="font-size: 0.85rem;">Demo interattiva basata sul documento "La visualizzazione dei dati nelle tabelle del Conto Economico di 10 grandi aziende italiane"</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Toggle tables
+function showTable(type) {
+    document.getElementById('table-bad').style.display = type === 'bad' ? 'block' : 'none';
+    document.getElementById('table-good').style.display = type === 'good' ? 'block' : 'none';
+    document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+}
+
+// Show company details
+function showCompany(company) {
+    document.querySelectorAll('.company-detail').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.company-badge').forEach(el => el.classList.remove('active'));
+    document.getElementById('company-' + company).style.display = 'block';
+    event.target.classList.add('active');
+}
+
+// Chart: Problemi per criterio
+const ctxProblemi = document.getElementById('chartProblemi').getContext('2d');
+new Chart(ctxProblemi, {
+    type: 'bar',
+    data: {
+        labels: ['Completezza', 'Griglia', 'Gerarchia Visiva', 'Valori Numerici', 'Caratteri/Testi'],
+        datasets: [{
+            label: 'Aziende con problemi',
+            data: [8, 7, 8, 9, 10],
+            backgroundColor: [
+                'rgba(25, 118, 210, 0.7)',
+                'rgba(123, 31, 162, 0.7)',
+                'rgba(56, 142, 60, 0.7)',
+                'rgba(245, 124, 0, 0.7)',
+                'rgba(194, 24, 91, 0.7)'
+            ],
+            borderColor: [
+                'rgba(25, 118, 210, 1)',
+                'rgba(123, 31, 162, 1)',
+                'rgba(56, 142, 60, 1)',
+                'rgba(245, 124, 0, 1)',
+                'rgba(194, 24, 91, 1)'
+            ],
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 10,
+                ticks: {
+                    stepSize: 2
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+
+// Chart: Aziende punti forza vs criticità
+const ctxAziende = document.getElementById('chartAziende').getContext('2d');
+new Chart(ctxAziende, {
+    type: 'bar',
+    data: {
+        labels: ['ENEL', 'ENI', 'Ferrari', 'Generali', 'Intesa', 'Snam', 'Stellantis', 'STM', 'Terna', 'Unicredit'],
+        datasets: [{
+            label: 'Punti di forza',
+            data: [3, 2, 4, 2, 3, 3, 4, 4, 2, 3],
+            backgroundColor: 'rgba(25, 135, 84, 0.7)',
+            borderColor: 'rgba(25, 135, 84, 1)',
+            borderWidth: 1
+        }, {
+            label: 'Criticità',
+            data: [3, 5, 4, 4, 4, 5, 4, 4, 6, 4],
+            backgroundColor: 'rgba(220, 53, 69, 0.7)',
+            borderColor: 'rgba(220, 53, 69, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 8
+            }
+        },
+        plugins: {
+            legend: {
+                position: 'top'
+            }
+        }
+    }
+});
+</script>
+
+</body>
+</html>
