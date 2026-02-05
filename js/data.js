@@ -310,7 +310,7 @@ const AppData = {
         },
         {
             id: 2,
-            question: 'Perche questi numeri sono difficili da confrontare?',
+            question: 'Perché questi numeri sono difficili da confrontare?',
             correct: 'b',
             options: {
                 a: 'Sono scritti in corsivo',
@@ -319,20 +319,20 @@ const AppData = {
                 d: 'Non sono allineati a destra'
             },
             feedbackCorrect: 'Esatto! Valori al singolo euro sono illeggibili. Meglio esprimerli in milioni.',
-            feedbackIncorrect: 'Il problema principale e la precisione eccessiva: 12 cifre per ogni numero sono impossibili da confrontare mentalmente.'
+            feedbackIncorrect: 'Il problema principale è la precisione eccessiva: 12 cifre per ogni numero sono impossibili da confrontare mentalmente.'
         },
         {
             id: 3,
-            question: 'Cosa c\'e di sbagliato nel contrasto di questa intestazione?',
+            question: 'Cosa c\'è di sbagliato nel contrasto di questa intestazione?',
             correct: 'c',
             options: {
                 a: 'I colori sono troppo vivaci',
                 b: 'Manca il bordo',
-                c: 'L\'anno recente (2024) e MENO visibile di quello passato',
-                d: 'Il font e troppo piccolo'
+                c: 'L\'anno recente (2024) è MENO visibile di quello passato',
+                d: 'Il font è troppo piccolo'
             },
             feedbackCorrect: 'Perfetto! Il 2024 su sfondo arancione con testo bianco ha meno contrasto del 2023 su sfondo bianco.',
-            feedbackIncorrect: 'Il problema e che l\'anno piu importante (2024) e su sfondo colorato con testo chiaro, rendendolo meno leggibile dell\'anno passato.'
+            feedbackIncorrect: 'Il problema è che l\'anno più importante (2024) è su sfondo colorato con testo chiaro, rendendolo meno leggibile dell\'anno passato.'
         },
         {
             id: 4,
@@ -345,7 +345,7 @@ const AppData = {
                 d: 'Usare un font proporzionale'
             },
             feedbackCorrect: 'Giusto! Il segno "–" mantiene l\'allineamento, le parentesi lo rompono.',
-            feedbackIncorrect: 'La soluzione e usare il segno meno "–" invece delle parentesi per i numeri negativi, cosi da mantenere l\'allineamento verticale.'
+            feedbackIncorrect: 'La soluzione è usare il segno meno "–" invece delle parentesi per i numeri negativi, così da mantenere l\'allineamento verticale.'
         },
         {
             id: 5,
